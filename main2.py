@@ -1,34 +1,53 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-import requests
+from gemini_config import obtainAnswer, gemini_starting, upload_and_train
 
-# Initialize the main window
+gemini_starting()
+
 root = tk.Tk()
 root.title("PDF to Gemini LLM Interface")
 root.geometry("800x600")
 root.configure(bg="#f0f0f0")
 
-# Global variables to store session history
 session_history = []
+uploaded_file = None
+file_path = False
 
 # Upload PDF function
 def upload_pdf():
+    global uploaded_file, file_path
     file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
+    
     if file_path:
-        messagebox.showinfo("Success", f"PDF uploaded: {file_path}")
+        upload_and_train(file_path)
+        uploaded_file = True
+        # Upload PDF to Gemini using the imported function
+        # uploaded_file = upload_to_gemini(file_path, mime_type="application/pdf")
+        
+        # Wait for file processing
+        # wait_for_files_active([uploaded_file])
+        
+        messagebox.showinfo("Success", f"PDF uploaded and processed: {file_path}")
         ask_button.config(state=tk.NORMAL)  # Enable the question asking after PDF upload
     else:
         messagebox.showwarning("Error", "No PDF selected")
 
 # Ask Gemini function
 def ask_question():
+    global uploaded_file, file_path
     question = question_entry.get()
     if not question:
         messagebox.showwarning("Input Error", "Please enter a question.")
         return
-    
-    # Simulate API request to Gemini (replace with actual API call)
-    response = f"Simulated response to the question: '{question}'"
+
+    if uploaded_file is None:
+        messagebox.showwarning("File Error", "Please upload a PDF first.")
+        return
+
+    # Send the question to the Gemini model
+    response = obtainAnswer(question)
+
+    print("response is : ", response)
     
     # Update session history
     session_history.append({"question": question, "response": response})
