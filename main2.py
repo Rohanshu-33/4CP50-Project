@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-import requests
+import json
 
 # Initialize the main window
 root = tk.Tk()
@@ -8,15 +8,24 @@ root.title("PDF to Gemini LLM Interface")
 root.geometry("800x600")
 root.configure(bg="#f0f0f0")
 
-# Global variables to store session history
+# Global variables to store session history in the specified format
 session_history = []
 
 # Upload PDF function
 def upload_pdf():
     file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
     if file_path:
+        session_history.append({
+            "role": "user",
+            "parts": [f"User uploaded PDF: {file_path}"]
+        })
+        session_history.append({
+            "role": "model",
+            "parts": ["OK. \n"]
+        })
         messagebox.showinfo("Success", f"PDF uploaded: {file_path}")
         ask_button.config(state=tk.NORMAL)  # Enable the question asking after PDF upload
+        update_session_display()
     else:
         messagebox.showwarning("Error", "No PDF selected")
 
@@ -28,10 +37,17 @@ def ask_question():
         return
     
     # Simulate API request to Gemini (replace with actual API call)
-    response = f"Simulated response to the question: '{question}'"
+    response = simulate_gemini_response(question)
     
-    # Update session history
-    session_history.append({"question": question, "response": response})
+    # Update session history in the required format
+    session_history.append({
+        "role": "user",
+        "parts": [question]
+    })
+    session_history.append({
+        "role": "model",
+        "parts": [response]
+    })
     
     # Update session display
     update_session_display()
@@ -39,21 +55,32 @@ def ask_question():
     # Clear the question entry field
     question_entry.delete(0, tk.END)
 
-# Update the session display with the question and response history
+# Simulate Gemini LLM response (replace with actual API integration)
+def simulate_gemini_response(question):
+    if "team" in question:
+        return "The team name is Team HackStack. \n"
+    elif "cricket" in question:
+        return "Question out of context. \n"
+    else:
+        return f"Response to the question: '{question}'\n"
+
+# Update the session display with the formatted session history
 def update_session_display():
     session_text.config(state=tk.NORMAL)
     session_text.delete(1.0, tk.END)
     for entry in session_history:
-        session_text.insert(tk.END, f"Q: {entry['question']}\nA: {entry['response']}\n\n")
+        role = entry["role"]
+        parts = entry["parts"]
+        for part in parts:
+            session_text.insert(tk.END, f"{role.capitalize()}: {part}\n")
     session_text.config(state=tk.DISABLED)
 
-# Save session history to a file
+# Save session history to a file in JSON format
 def save_session():
-    file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON Files", "*.json")])
     if file_path:
         with open(file_path, "w") as file:
-            for entry in session_history:
-                file.write(f"Q: {entry['question']}\nA: {entry['response']}\n\n")
+            json.dump(session_history, file, indent=4)
         messagebox.showinfo("Success", f"Session saved: {file_path}")
 
 # Header label
