@@ -8,43 +8,6 @@ root.title("PDF to Gemini LLM Interface")
 root.geometry("800x600")  # Set a large window size for better UI on big screens
 root.configure(bg="#f0f0f0")  # Light background color
 
-# Define the API endpoints (replace with actual URLs)
-GEMINI_PDF_UPLOAD_URL = "http://gemini-api/upload"  # Replace with your Gemini upload endpoint
-GEMINI_QUESTION_URL = "http://gemini-api/question"  # Replace with your Gemini question endpoint
-
-# Function to upload PDF and parse with Gemini
-def upload_pdf():
-    filepath = filedialog.askopenfilename(
-        initialdir="/", title="Select PDF File", filetypes=(("PDF Files", "*.pdf"), ("All Files", "*.*"))
-    )
-    if filepath:
-        try:
-            with open(filepath, 'rb') as file:
-                # Send the PDF to Gemini API
-                response = requests.post(GEMINI_PDF_UPLOAD_URL, files={'file': file})
-                
-                if response.status_code == 200 and response.text == "OK":
-                    messagebox.showinfo("Success", "PDF successfully parsed by Gemini!")
-                else:
-                    messagebox.showerror("Error", "Failed to parse PDF with Gemini")
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
-# Function to send a question to the Gemini LLM and get a response
-def ask_question():
-    question = question_entry.get()
-    if question:
-        try:
-            # Send the question to the Gemini API
-            response = requests.post(GEMINI_QUESTION_URL, json={'question': question})
-            if response.status_code == 200:
-                response_text = response.json().get("answer", "No answer returned")
-                response_label.config(text=f"Response: {response_text}")
-            else:
-                messagebox.showerror("Error", "Failed to get a response from Gemini")
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
 # Header label
 header_label = tk.Label(
     root, text="Gemini PDF Parsing and Question Answering", font=("Helvetica", 24, "bold"), bg="#f0f0f0"
