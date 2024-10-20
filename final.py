@@ -7,20 +7,15 @@ gemini_starting()
 root = tk.Tk()
 root.title("PDF Explorar")
 root.geometry("800x600")
-# root.configure(bg="#f0f0f0")
 
 session_history = []
-# is_file_uploaded = False
-file_path = False
 
 # Upload PDF function
 def upload_pdf():
-    global  file_path
     file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
     
     if file_path:
         upload_and_train(file_path)
-        # is_file_uploaded = True
         
         messagebox.showinfo("Success", f"PDF uploaded and processed: {file_path}")
         ask_button.config(state=tk.NORMAL) 
@@ -29,15 +24,10 @@ def upload_pdf():
 
 # Ask Gemini function
 def ask_question():
-    global file_path
     question = question_entry.get()
     if not question:
         messagebox.showwarning("Input Error", "Please enter a question.")
         return
-
-    # if not is_file_uploaded:
-    #     messagebox.showwarning("File Error", "Please upload a PDF first.")
-    #     return
 
     # Send the question to the Gemini model
     response = obtainAnswer(question)
@@ -53,12 +43,11 @@ def ask_question():
     # Clear the question entry field
     question_entry.delete(0, tk.END)
 
-# Update thedisplay with the question and response history
+# Update the display with the question and response history
 def update_history():
     history.config(state=tk.NORMAL)
-    history.delete(1.0, tk.END)
-    for entry in session_history:
-        history.insert(tk.END, f"Q: {entry['question']}\nA: {entry['response']}\n\n")
+    last_entry = session_history[-1]
+    history.insert(tk.END, f"Q: {last_entry['question']}\nA: {last_entry['response']}\n\n")
     history.config(state=tk.DISABLED)
 
 # Savehistory to a file
