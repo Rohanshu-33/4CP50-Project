@@ -5,8 +5,8 @@ from gemini_config import obtainAnswer, gemini_starting, upload_and_train
 gemini_starting()
 
 root = tk.Tk()
-root.title("PDF Explorar")
-root.geometry("800x600")
+root.title("PDF Explorer")
+root.geometry("1000x800")
 
 session_history = []
 
@@ -61,7 +61,7 @@ def save_session():
 
 # Header
 header = tk.Label(
-    root, text="PDF Explorar", font=("", 24, "bold"), bg="#f0f0f0"
+    root, text="PDF Explorer", font=("", 24, "bold"), bg="#f0f0f0"
 )
 header.grid(row=0, column=0, columnspan=3, pady=20)
 
@@ -83,13 +83,13 @@ question_entry.grid(row=2, column=1, padx=20, pady=20)
 
 # Ask button
 ask_button = tk.Button(
-    root, text="Ask Gemini", padx=20, pady=10, bg="#008CBA", fg="white", font=("", 16), command=ask_question
+    root, text="Ask Question", padx=20, pady=10, bg="#008CBA", fg="white", font=("", 16), command=ask_question
 )
 ask_button.grid(row=3, column=0, columnspan=3, pady=10)
 ask_button.config(state=tk.DISABLED) 
 
 #history
-history = tk.Text(root, wrap="word", height=15, font=("", 14), state=tk.DISABLED)
+history = tk.Text(root, wrap="word", height=13, font=("", 14), state=tk.DISABLED)
 history.grid(row=4, column=0, columnspan=3, padx=20, pady=10)
 
 # Savebutton
