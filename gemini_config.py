@@ -18,7 +18,7 @@ def gemini_starting():
     "temperature": 0,
     "top_p": 0.95,
     "top_k": 64,
-    "max_output_tokens": 8192,
+    "max_output_tokens": 20000,
     "response_mime_type": "text/plain",
   }
 
