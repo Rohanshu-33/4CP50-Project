@@ -42,11 +42,11 @@ def wait_for_files_active(files):
     file = genai.get_file(name)
     while file.state.name == "PROCESSING":
       print(".", end="", flush=True)
-      time.sleep(10)
+      time.sleep(2)
       file = genai.get_file(name)
     if file.state.name != "ACTIVE":
       raise Exception(f"File {file.name} failed to process")
-  print("...all files ready")
+  print("Files are ready.")
   print()
 
 
