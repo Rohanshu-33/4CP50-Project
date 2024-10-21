@@ -15,7 +15,13 @@ def upload_pdf():
     file_path = filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
     
     if file_path:
-        upload_and_train(file_path)
+        signal = upload_and_train(file_path)
+
+        print("Signal is : ", signal)
+        
+        if signal == "red":
+            messagebox.showerror("Error", "Please check your internet connection")
+            return
         
         messagebox.showinfo("Success", f"PDF uploaded and processed: {file_path}")
         ask_button.config(state=tk.NORMAL) 
